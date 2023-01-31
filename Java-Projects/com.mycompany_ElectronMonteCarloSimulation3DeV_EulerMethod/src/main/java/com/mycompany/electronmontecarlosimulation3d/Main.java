@@ -71,7 +71,7 @@ public class Main {
         theResults.add(result);
         writeJSON(theResults, "results.json");
 
-        findPointOnPaschenCurveLite(110, 27.5, 28, 11);
+//        findPointOnPaschenCurveLite(110, 27.5, 28, 11);
     }
 
     // NEW!!!

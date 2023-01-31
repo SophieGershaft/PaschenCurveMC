@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 import org.apache.commons.lang3.time.StopWatch;
 
 /**
@@ -22,8 +21,8 @@ public class Simulation {
 
     private Queue<Electron> queue;
     private StopWatch stopwatch;
-    ThreadLocalRandom random;
-//    Random random;
+//    ThreadLocalRandom random;
+    Random random;
     IGeometry geometry; // = new ParallelPlate(random);
 
     double lambda;
@@ -38,13 +37,15 @@ public class Simulation {
     double delta_t;
 
     public Simulation(IGeometry geometry, Random random) {
-        this.random = ThreadLocalRandom.current();
+        this.random = random;
         this.queue = new LinkedList<Electron>();
         this.stopwatch = new StopWatch();
         this.geometry = geometry;
-        // initialize geometry with values from settings
-        geometry.initialize();
+        // might not be necessary but let's add these values:
+//        this.lambda = this.geometry.lambda;
+        this.lambda_i = this.geometry.lambda_i;
         this.count = this.geometry.getCount();
+        this.Ui = this.geometry.Ui;
     }
     
 
@@ -64,6 +65,7 @@ public class Simulation {
 
         // DEBUGGING PURPOSES:
 //        System.out.format("d: %.3f, Ui: %.1f, Nc: %.1f, Ni: %.1f, lambda: %.3f, lambda_i: %.3f, V: %.1f, E: %.1f \n", d, Ui, Nc, Ni, lambda, lambda_i, voltage, E);
+        System.out.format("Ui: %.1f, Nc: %.1f, Ni: %.1f, lambda: %.3f, lambda_i: %.3f, E: %.1f \n", Ui, Nc, Ni, lambda, lambda_i, E);
 
         // simulation loop:
         for (int i = 0; i < count; i++) {
@@ -88,7 +90,10 @@ public class Simulation {
                 boolean isCathode = false;
 
                 do {
-                    double s = Distributions.inverseCDFexponential(lambda, random);
+                    double my_lambda = this.geometry.lambda;
+                    System.out.format("lambda from geometry.lambda: %.5f \n", geometry.lambda);
+                    System.out.format("my_lambda: %.5f \n", my_lambda);
+                    double s = Distributions.inverseCDFexponential(my_lambda, random);
                     // NOTE: THIS IS JUST FOR DEBUGGING !!!!!!!!!!
 //                    System.out.println("s: " + s);
 
@@ -104,6 +109,7 @@ public class Simulation {
                     // check if between electrodes
                     reachedAnode = geometry.isAnode(currElectron.position);
                     isCathode = geometry.isCathode(currElectron.position);
+                    // NOTE this can cause problems if the electron doesn't move the first time
                     if (reachedAnode || isCathode) {
 //                        System.out.println("reached anode");
                         break;

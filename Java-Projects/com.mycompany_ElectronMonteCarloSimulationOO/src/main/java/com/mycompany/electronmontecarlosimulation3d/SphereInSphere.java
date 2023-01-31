@@ -6,7 +6,6 @@
 package com.mycompany.electronmontecarlosimulation3d;
 
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  *
@@ -19,7 +18,7 @@ public class SphereInSphere implements IGeometry {
     double a;
     double b;
     double V;
-    ThreadLocalRandom random;
+    Random random;
 
     // initialize these settings
     double lambda;
@@ -30,7 +29,7 @@ public class SphereInSphere implements IGeometry {
     double Nc;
     double Ni;
 
-    public SphereInSphere(ThreadLocalRandom random) {
+    public SphereInSphere(Random random) {
         // compute a and b
         this.r1 = SettingsSS.getInstance().getRInner();
         this.r2 = SettingsSS.getInstance().getROuter();

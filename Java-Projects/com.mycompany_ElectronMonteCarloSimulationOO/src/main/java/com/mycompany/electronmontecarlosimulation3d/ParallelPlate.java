@@ -6,7 +6,7 @@
 package com.mycompany.electronmontecarlosimulation3d;
 
 import java.io.IOException;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.Random;
 
 /**
  *
@@ -16,7 +16,7 @@ public class ParallelPlate implements IGeometry {
 
     double d;
     double V;
-    ThreadLocalRandom random; // WHY DO I MAKE IT IF I DON'T USE IT HERE??
+    Random random;
     
     // initialize these settings
     double lambda;
@@ -28,7 +28,7 @@ public class ParallelPlate implements IGeometry {
     double Ni;
     double delta_t;
 
-    public ParallelPlate(ThreadLocalRandom random) throws IOException {
+    public ParallelPlate(Random random) throws IOException {
         this.d = SettingsPP.getInstance().getD();
         if (this.d < 1e-10) {
             throw new IOException("Wrong D!");

@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.cli.BasicParser;
@@ -48,7 +47,7 @@ public class Main {
         System.out.println("Parameters: " + String.join(",", args));
         // To support multiple settings --> use command-line arguments.
         CommandLine cmdLine = parseArguments(args);
-        ThreadLocalRandom random = ThreadLocalRandom.current();
+        
         String resource;
         IGeometry geometry = null;
         if (cmdLine.hasOption("input")) {
@@ -68,7 +67,6 @@ public class Main {
 
         // TODO: print all settings + include in results file 
         // TEMPORARY SOLUTION : still need factory function to make it run w/ both PP and SS
-//        ThreadLocalRandom random = ThreadLocalRandom.current();
 //        IGeometry geometry = new ParallelPlate(random);
         Simulation sim = new Simulation(geometry, random);
 
@@ -82,16 +80,17 @@ public class Main {
         theResults.add(result);
         writeJSON(theResults, "results.json");
 
-//        findPointOnPaschenCurveLitePP(110, 27.5, 28, 11);
+//        findPointOnPaschenCurveLitePP(110, 27.5, 28, 11, random);
     }
 
     // create geometry based on json input file
-    public static IGeometry createGeometry(String fileName, ThreadLocalRandom random) {
+    public static IGeometry createGeometry(String fileName, Random random) {
         try {
             // parsing JSON file: can it be parsed as parallel plate?
             SettingsPP.fromJSON(fileName);
             // create and return ParallelPlate geometry
             IGeometry geometry = new ParallelPlate(random);
+            geometry.initialize();
             return geometry;
         } catch (IOException e) {
             try {
@@ -99,6 +98,8 @@ public class Main {
                 SettingsSS.fromJSON(fileName);
                 // create and return SphereInSphere geometry
                 IGeometry geometry = new SphereInSphere(random);
+                // initialize geometry with values from settings
+                geometry.initialize();
                 return geometry;
             } catch (IOException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
@@ -119,7 +120,6 @@ public class Main {
             SettingsPP.getInstance().setNi(Ni);
 
             // TEMPORARY SOLUTION : still need factory function to make it run w/ both PP and SS
-            ThreadLocalRandom random = ThreadLocalRandom.current();
             IGeometry geometry = new ParallelPlate(random);
             Simulation sim = new Simulation(geometry, random);
 
@@ -164,7 +164,6 @@ public class Main {
             SettingsPP.getInstance().setCount(count);
 
             // TEMPORARY SOLUTION : still need factory function to make it run w/ both PP and SS
-            ThreadLocalRandom random = ThreadLocalRandom.current();
             IGeometry geometry = new ParallelPlate(random);
             Simulation sim = new Simulation(geometry, random);
 
@@ -186,7 +185,6 @@ public class Main {
             SettingsPP.getInstance().setCount(count);
 
             // TEMPORARY SOLUTION : still need factory function to make it run w/ both PP and SS
-            ThreadLocalRandom random = ThreadLocalRandom.current();
             IGeometry geometry = new ParallelPlate(random);
             Simulation sim = new Simulation(geometry, random);
 
