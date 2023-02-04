@@ -90,7 +90,6 @@ public class Main {
             SettingsPP.fromJSON(fileName);
             // create and return ParallelPlate geometry
             IGeometry geometry = new ParallelPlate(random);
-            geometry.initialize();
             return geometry;
         } catch (IOException e) {
             try {
@@ -99,7 +98,6 @@ public class Main {
                 // create and return SphereInSphere geometry
                 IGeometry geometry = new SphereInSphere(random);
                 // initialize geometry with values from settings
-                geometry.initialize();
                 return geometry;
             } catch (IOException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);

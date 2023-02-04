@@ -13,14 +13,6 @@ import java.util.Random;
  */
 public interface IGeometry {
     
-    // i feel like this is wrong
-    double lambda = 0;
-    double lambda_i = 0;
-    double Ui = 0;
-    
-    double Nc = 0;
-    double Ni = 0;
- 
     boolean isCathode(Vector r);
     
     boolean isAnode(Vector r); 
@@ -31,9 +23,13 @@ public interface IGeometry {
     
     Vector cathodeStart();
     
-    void initialize();
-    
     int getCount();
     
     double getDeltaT();
+    
+    double getLambda();
+    
+    double getLambdaI();
+    
+    double getUI();
 }

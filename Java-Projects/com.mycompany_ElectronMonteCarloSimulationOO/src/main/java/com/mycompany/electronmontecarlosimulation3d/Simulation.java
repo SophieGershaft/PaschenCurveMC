@@ -41,11 +41,10 @@ public class Simulation {
         this.queue = new LinkedList<Electron>();
         this.stopwatch = new StopWatch();
         this.geometry = geometry;
-        // might not be necessary but let's add these values:
-//        this.lambda = this.geometry.lambda;
-        this.lambda_i = this.geometry.lambda_i;
+        this.lambda = this.geometry.getLambda();
+        this.lambda_i = this.geometry.getLambdaI();
         this.count = this.geometry.getCount();
-        this.Ui = this.geometry.Ui;
+        this.Ui = this.geometry.getUI();
     }
     
 
@@ -90,10 +89,7 @@ public class Simulation {
                 boolean isCathode = false;
 
                 do {
-                    double my_lambda = this.geometry.lambda;
-                    System.out.format("lambda from geometry.lambda: %.5f \n", geometry.lambda);
-                    System.out.format("my_lambda: %.5f \n", my_lambda);
-                    double s = Distributions.inverseCDFexponential(my_lambda, random);
+                    double s = Distributions.inverseCDFexponential(this.lambda, random);
                     // NOTE: THIS IS JUST FOR DEBUGGING !!!!!!!!!!
 //                    System.out.println("s: " + s);
 

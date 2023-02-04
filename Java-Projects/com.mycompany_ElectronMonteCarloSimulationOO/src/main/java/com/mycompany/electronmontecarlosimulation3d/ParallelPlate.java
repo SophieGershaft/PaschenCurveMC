@@ -33,8 +33,18 @@ public class ParallelPlate implements IGeometry {
         if (this.d < 1e-10) {
             throw new IOException("Wrong D!");
         }
+        // initialize things
         this.V = SettingsPP.getInstance().getVoltage();
         this.random = random;
+        this.lambda = SettingsPP.getInstance().getLambda();
+        this.lambda_i = SettingsPP.getInstance().getLambdaI();
+        this.count = SettingsPP.getInstance().getCount();
+        this.Ui = SettingsPP.getInstance().getUI();
+
+        // FOR DEBUGGING PURPOSES:
+        this.Nc = SettingsPP.getInstance().getNc();
+        this.Ni = SettingsPP.getInstance().getNi();
+        this.delta_t = SettingsPP.getInstance().getDeltaT();
     }
 
     // check whether electron is inside or on the cathode
@@ -78,17 +88,19 @@ public class ParallelPlate implements IGeometry {
     public double getDeltaT() {
         return delta_t;
     }
-
+    
     @Override
-    public void initialize() {
-        this.lambda = SettingsPP.getInstance().getLambda();
-        this.lambda_i = SettingsPP.getInstance().getLambdaI();
-        this.count = SettingsPP.getInstance().getCount();
-        this.Ui = SettingsPP.getInstance().getUI();
-
-        // FOR DEBUGGING PURPOSES:
-        this.Nc = SettingsPP.getInstance().getNc();
-        this.Ni = SettingsPP.getInstance().getNi();
-        this.delta_t = SettingsPP.getInstance().getDeltaT();
+    public double getLambda() {
+        return lambda;
+    }
+    
+    @Override
+    public double getLambdaI() {
+        return lambda_i;
+    }
+    
+    @Override
+    public double getUI() {
+        return Ui;
     }
 }

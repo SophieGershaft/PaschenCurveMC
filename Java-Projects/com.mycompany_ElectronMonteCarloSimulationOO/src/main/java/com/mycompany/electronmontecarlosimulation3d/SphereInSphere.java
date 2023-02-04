@@ -39,6 +39,15 @@ public class SphereInSphere implements IGeometry {
         this.random = random;
         // a/r2 + b = 0 --> anode
         // a/r1 + b = b(1 - r2/r1) = b(r1-r2)/r1 = -1 --> cathode
+        // initialize things
+        this.lambda = SettingsSS.getInstance().getLambda();
+        this.lambda_i = SettingsSS.getInstance().getLambdaI();
+        this.count = SettingsSS.getInstance().getCount();
+        this.Ui = SettingsSS.getInstance().getUI();
+
+        this.delta_t = SettingsSS.getInstance().getDeltaT();
+        this.Nc = SettingsSS.getInstance().getNc();
+        this.Ni = SettingsSS.getInstance().getNi();
     }
 
     @Override
@@ -113,16 +122,19 @@ public class SphereInSphere implements IGeometry {
     public double getDeltaT() {
         return delta_t;
     }
-
+    
+        @Override
+    public double getLambda() {
+        return lambda;
+    }
+    
     @Override
-    public void initialize() {
-        this.lambda = SettingsSS.getInstance().getLambda();
-        this.lambda_i = SettingsSS.getInstance().getLambdaI();
-        this.count = SettingsSS.getInstance().getCount();
-        this.Ui = SettingsSS.getInstance().getUI();
-
-        this.delta_t = SettingsSS.getInstance().getDeltaT();
-        this.Nc = SettingsSS.getInstance().getNc();
-        this.Ni = SettingsSS.getInstance().getNi();
+    public double getLambdaI() {
+        return lambda_i;
+    }
+    
+    @Override
+    public double getUI() {
+        return Ui;
     }
 }

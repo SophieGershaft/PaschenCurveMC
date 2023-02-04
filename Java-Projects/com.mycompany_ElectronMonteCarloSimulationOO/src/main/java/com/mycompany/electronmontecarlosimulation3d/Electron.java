@@ -142,7 +142,7 @@ public class Electron {
 
         // FOR DEBUGGING
 //        System.out.println("energy: " + energy);
-        double Ui = geometry.Ui;
+        double Ui = geometry.getUI();
         if (energy >= Ui) {
             return true;
         }
