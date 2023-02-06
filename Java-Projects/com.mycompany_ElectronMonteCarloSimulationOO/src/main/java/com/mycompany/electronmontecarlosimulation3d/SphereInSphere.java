@@ -112,29 +112,40 @@ public class SphereInSphere implements IGeometry {
         // point should lie on surface of sphere w/ radius r
         return start;
     }
-    
+
     @Override
     public int getCount() {
         return this.count;
     }
-    
+
     @Override
     public double getDeltaT() {
         return delta_t;
     }
-    
-        @Override
+
+    @Override
     public double getLambda() {
         return lambda;
     }
-    
+
     @Override
     public double getLambdaI() {
         return lambda_i;
     }
-    
+
     @Override
     public double getUI() {
         return Ui;
     }
+
+    @Override
+    public double getNc() {
+        return Nc;
+    }
+
+    @Override
+    public double getNi() {
+        return Ni;
+    }
+    
 }

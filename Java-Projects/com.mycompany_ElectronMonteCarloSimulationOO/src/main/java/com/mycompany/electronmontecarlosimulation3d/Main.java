@@ -59,21 +59,20 @@ public class Main {
                     .getResource(resource).getFile();
             // spaces had a weird error so had to replace %20 with spaces for it to work
             File file = new File(fileName.replace("%20", " "));
-//            SettingsPP.fromJSON(file.getAbsolutePath());
-            
             // get geometry
             geometry = createGeometry(file.getAbsolutePath(), random);
         }
 
         // TODO: print all settings + include in results file 
-        // TEMPORARY SOLUTION : still need factory function to make it run w/ both PP and SS
-//        IGeometry geometry = new ParallelPlate(random);
         Simulation sim = new Simulation(geometry, random);
-
         MeanAndError result = sim.run(false, 0.8); // printThings, forwardScatter
-
-//        runForRatioPP(1.0, 0.2, 14.0, 0.8, 2500);
         System.out.println(result);
+        
+//        runForRatioPP(geometry, 1.0, 0.2, 14.0, 0.8, 1000);
+        // BAD AND BUGGY
+//        runForManyRatiosOldPP(geometry, 1.0, 4.0, 1.0, 0.5, 8.5, 0.5, 1000);
+        findPointOnPaschenCurveLitePP(5.0, 20.0, 21.8, 11);
+
 //        randomSeedTester();
 
         ArrayList<MeanAndError> theResults = new ArrayList<MeanAndError>();
@@ -144,37 +143,46 @@ public class Main {
             System.out.println("fully done!");
         }
     }
-
-    public static void runForManyRatios(double rStart, double rEnd, double rIncrement, double dStart, double dEnd, double dIncrement, int count) throws IOException {
+    
+    // THIS HAS BUGS
+        public static void runForManyRatiosPP(IGeometry geometry, double rStart, double rEnd, double rIncrement, double startNc, double endNc, double NcIncrement, int count) throws IOException {
         for (double ratio = rStart; ratio <= rEnd; ratio += rIncrement) {
-            runForRatioPP(ratio, dStart, dEnd, dIncrement, count);
+            runForRatioPP(geometry, ratio, startNc, endNc, NcIncrement, count);
         }
     }
 
     // runs simulations for varying values of anode_pos, voltage, and Nc for a single ratio
-    public static void runForRatioPP(double ratio, double startNc, double endNc, double increment, int count) throws IOException {
+    public static void runForRatioPP(IGeometry geometry, double ratio, double startNc, double endNc, double increment, int count) throws IOException {
         ArrayList<MeanAndError> theResults = new ArrayList<MeanAndError>();
         for (double Nc = startNc; Nc <= endNc; Nc += increment) {
-            SettingsPP.getInstance().setD(0.05);
+            SettingsPP.getInstance().setD(0.05); // d is 5 cm
             SettingsPP.getInstance().setUI(15); // Ui is 15 eV
             SettingsPP.getInstance().setNc(Nc);
             SettingsPP.getInstance().setNi(Nc * (1 / ratio));
             SettingsPP.getInstance().setCount(count);
-
-            // TEMPORARY SOLUTION : still need factory function to make it run w/ both PP and SS
-            IGeometry geometry = new ParallelPlate(random);
+            geometry = new ParallelPlate(random);
+            
             Simulation sim = new Simulation(geometry, random);
-
             MeanAndError result = sim.run(false, 0.8);
-            System.out.println("{" + result.Nc + ", Around[" + result.mean + ", " + result.error + "]},");
+            System.out.println(result);
+            
+            // MATHEMATICA STYLE PRINTING:
+//            System.out.println("{" + result.Nc + ", Around[" + result.mean + ", " + result.error + "]},");
             theResults.add(result);
         }
         String filename = String.format("results_%s.json", ratio);
         writeJSON(theResults, filename);
     }
 
+    // THIS HAS BUGS
+        public static void runForManyRatiosOldPP(IGeometry geometry, double rStart, double rEnd, double rIncrement, double dStart, double dEnd, double dIncrement, int count) throws IOException {
+        for (double ratio = rStart; ratio <= rEnd; ratio += rIncrement) {
+            runForRatioPP(geometry, ratio, dStart, dEnd, dIncrement, count);
+        }
+    }
+        
     // runs simulations for varying values of anode_pos, voltage, and Nc for a single ratio
-    public static void runForOneRatioPP(double ratio, double dStart, double dEnd, double increment, int count) throws IOException {
+    public static void runForOneRatioPP(IGeometry geometry, double ratio, double dStart, double dEnd, double increment, int count) throws IOException {
         ArrayList<MeanAndError> theResults = new ArrayList<MeanAndError>();
         for (double d = dStart; d <= dEnd; d += increment) {
             SettingsPP.getInstance().setD(d);
@@ -182,8 +190,6 @@ public class Main {
             SettingsPP.getInstance().setNc(d);
             SettingsPP.getInstance().setCount(count);
 
-            // TEMPORARY SOLUTION : still need factory function to make it run w/ both PP and SS
-            IGeometry geometry = new ParallelPlate(random);
             Simulation sim = new Simulation(geometry, random);
 
             MeanAndError result = sim.run(true, -1.0);
@@ -205,30 +211,6 @@ public class Main {
         writer.close();
     }
 
-//    // function that runs sims of a certain NcNi ratio for some range of Nc
-//    private static ArrayList<SettingsFresh> makeSettingsForRatio(double startAnodePos, double endAnodePos,
-//            double increment, SettingsFresh startSettings) {
-//        ArrayList<SettingsFresh> settings1 = new ArrayList<SettingsFresh>();
-//        // find E field:
-//        double Efield = startSettings.voltage / startSettings.anode_pos;
-//        // i is the current Nc
-//        for (double i = startAnodePos; i < endAnodePos; i += increment) {
-//            // make new settings object for each sim
-//            SettingsFresh s1 = new SettingsFresh();
-//            s1.lambda_c = startSettings.lambda_c; // in m
-//            s1.anode_pos = i; // in m 
-////            s1.voltage = Efield * s1.anode_pos; // in volts
-//            s1.voltage = s1.anode_pos;
-//            s1.lambda_i = startSettings.lambda_i; // in m
-//            s1.U_i = startSettings.U_i; // in electronvolts
-//            s1.reps = startSettings.reps; // unitless
-//            s1.tolerance = startSettings.tolerance; // in m
-//
-//            // lambda_i = 1 --> distance and voltage are the same
-//            settings1.add(s1);
-//        }
-//        return settings1;
-//    }
     // parsing commandline arguments (googled how to do)
     private static CommandLine parseArguments(String[] args) {
         Options options = new Options();
