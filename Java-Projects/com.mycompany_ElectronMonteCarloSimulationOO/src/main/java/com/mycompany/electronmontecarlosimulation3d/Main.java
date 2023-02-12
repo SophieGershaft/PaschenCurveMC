@@ -71,7 +71,7 @@ public class Main {
 //        runForRatioPP(geometry, 1.0, 0.2, 14.0, 0.8, 1000);
         // BAD AND BUGGY
 //        runForManyRatiosOldPP(geometry, 1.0, 4.0, 1.0, 0.5, 8.5, 0.5, 1000);
-        findPointOnPaschenCurveLitePP(5.0, 20.0, 21.8, 11);
+//        findPointOnPaschenCurveLitePP(5.0, 20.0, 21.8, 11);
 
 //        randomSeedTester();
 
