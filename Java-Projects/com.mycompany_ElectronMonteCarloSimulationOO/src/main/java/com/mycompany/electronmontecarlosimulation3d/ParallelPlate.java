@@ -103,4 +103,14 @@ public class ParallelPlate implements IGeometry {
     public double getUI() {
         return Ui;
     }
+    
+    @Override
+    public double getNc() {
+        return Nc;
+    }
+    
+    @Override
+    public double getNi() {
+        return Ni;
+    }
 }

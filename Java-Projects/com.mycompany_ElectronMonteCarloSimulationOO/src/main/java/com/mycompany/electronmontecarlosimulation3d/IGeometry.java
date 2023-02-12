@@ -32,4 +32,8 @@ public interface IGeometry {
     double getLambdaI();
     
     double getUI();
+    
+    double getNc();
+    
+    double getNi();
 }

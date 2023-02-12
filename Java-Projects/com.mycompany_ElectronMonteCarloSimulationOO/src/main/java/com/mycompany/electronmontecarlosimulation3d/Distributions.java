@@ -19,7 +19,7 @@ public class Distributions {
         // makes exponential distribution from uniform distribution
         double u = random.nextDouble();
 //        System.out.format("%20.15f \n", u);
-        System.out.format("lambda inside CDF: %.5f \n", lambda);
+//        System.out.format("lambda inside CDF: %.5f \n", lambda);
         Main.randomNums.add(u);
         double s = -lambda * Math.log(1 - u);
 //        System.out.format("s = -%.15f * log(1 - %.15f) = %.15f \n", lambda, u, s);

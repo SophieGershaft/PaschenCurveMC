@@ -33,14 +33,15 @@ public class Simulation {
     // FOR DEBUGGING PURPOSES:
     double Nc;
     double Ni;
-    double E; // TO DO: RECONSIDER THIS AND CONSIDER USING ONLY E FIELD FROM GEOMETRY
     double delta_t;
 
     public Simulation(IGeometry geometry, Random random) {
+        this.geometry = geometry;
         this.random = random;
+        this.Nc = this.geometry.getNc();
+        this.Ni = this.geometry.getNi();
         this.queue = new LinkedList<Electron>();
         this.stopwatch = new StopWatch();
-        this.geometry = geometry;
         this.lambda = this.geometry.getLambda();
         this.lambda_i = this.geometry.getLambdaI();
         this.count = this.geometry.getCount();
@@ -63,8 +64,7 @@ public class Simulation {
         int deCount = 0;
 
         // DEBUGGING PURPOSES:
-//        System.out.format("d: %.3f, Ui: %.1f, Nc: %.1f, Ni: %.1f, lambda: %.3f, lambda_i: %.3f, V: %.1f, E: %.1f \n", d, Ui, Nc, Ni, lambda, lambda_i, voltage, E);
-        System.out.format("Ui: %.1f, Nc: %.1f, Ni: %.1f, lambda: %.3f, lambda_i: %.3f, E: %.1f \n", Ui, Nc, Ni, lambda, lambda_i, E);
+        System.out.format("Ui: %.1f, Nc: %.1f, Ni: %.1f, lambda: %.3f, lambda_i: %.3f \n", Ui, Nc, Ni, lambda, lambda_i);
 
         // simulation loop:
         for (int i = 0; i < count; i++) {
