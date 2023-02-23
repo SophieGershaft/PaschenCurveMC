@@ -65,7 +65,7 @@ public class Main {
 
         // TODO: print all settings + include in results file 
         Simulation sim = new Simulation(geometry, random);
-        MeanAndError result = sim.run(false, 0.8); // printThings, forwardScatter
+        MeanAndError result = sim.run(0.8); // printThings, forwardScatter
         System.out.println(result);
         
 //        runForRatioPP(geometry, 1.0, 0.2, 14.0, 0.8, 1000);
@@ -122,7 +122,7 @@ public class Main {
             IGeometry geometry = new ParallelPlate(random);
             Simulation sim = new Simulation(geometry, random);
 
-            MeanAndError result = sim.run(false, 0.8);
+            MeanAndError result = sim.run(0.8);
             results.add(result);
             System.out.println(result);
         }
@@ -165,7 +165,7 @@ public class Main {
             geometry = new ParallelPlate(random);
             
             Simulation sim = new Simulation(geometry, random);
-            MeanAndError result = sim.run(false, 0.8);
+            MeanAndError result = sim.run(0.8);
             System.out.println(result);
             
             // MATHEMATICA STYLE PRINTING:
@@ -194,7 +194,7 @@ public class Main {
 
             Simulation sim = new Simulation(geometry, random);
 
-            MeanAndError result = sim.run(true, -1.0);
+            MeanAndError result = sim.run(-1.0);
             System.out.println("{" + result.Nc + ", Around[" + result.mean + ", " + result.error + "]},");
             theResults.add(result);
         }

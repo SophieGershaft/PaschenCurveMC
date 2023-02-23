@@ -48,7 +48,7 @@ public class Simulation {
     }
     
 
-    public MeanAndError run(boolean printThings, double minCos) {
+    public MeanAndError run(double minCos) {
         stopwatch.start();
         ArrayList<Integer> allElectronCounts = new ArrayList<Integer>();
         ArrayList<Integer> allCollisionCounts = new ArrayList<Integer>();
@@ -110,12 +110,12 @@ public class Simulation {
                     // check if ionized
                     double v = currElectron.velocity.getNorm();
                     // checks if energy > Ui
-                    ionized = currElectron.checkIonization(v);
+                    ionized = currElectron.checkIonization();
                     // adjust energy and (if ionized) launch new electron
                     double energyLoss;
 
                     if (ionized) {
-//                        System.out.println("ionized");
+                        System.out.println("ionized");
                         numElectrons++;
                         Electron newElectron = new Electron(currElectron.position, startVelocity, geometry);
                         queue.add(newElectron);

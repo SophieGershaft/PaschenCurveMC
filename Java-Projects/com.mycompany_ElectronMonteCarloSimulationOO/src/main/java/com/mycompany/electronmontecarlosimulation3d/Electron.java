@@ -135,11 +135,11 @@ public class Electron {
     }
 
     // check ionization
-    boolean checkIonization(double v) {
-        double energy = 0.5 * this.m * v * v; // in eV
-
+    boolean checkIonization() {
+        double energy = 0.5 * this.m * this.velocity.Square(); // in eV
+        System.out.format("velocity.Square(): %10.8f \n", this.velocity.Square());
         // FOR DEBUGGING
-//        System.out.println("energy: " + energy);
+        System.out.println("energy: " + energy);
         double Ui = geometry.getUI();
         if (energy >= Ui) {
             return true;
