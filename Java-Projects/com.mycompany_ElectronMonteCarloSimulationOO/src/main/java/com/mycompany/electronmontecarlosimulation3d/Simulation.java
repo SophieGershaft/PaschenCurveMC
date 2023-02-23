@@ -21,7 +21,6 @@ public class Simulation {
 
     private Queue<Electron> queue;
     private StopWatch stopwatch;
-//    ThreadLocalRandom random;
     Random random;
     IGeometry geometry; // = new ParallelPlate(random);
 
@@ -91,7 +90,7 @@ public class Simulation {
                 do {
                     double s = Distributions.inverseCDFexponential(this.lambda, random);
                     // NOTE: THIS IS JUST FOR DEBUGGING !!!!!!!!!!
-//                    System.out.println("s: " + s);
+//                    System.out.println("new s: " + s);
 
                     // update position using vector addition to add components, update velocity
                     x0 = currElectron.position.x;
