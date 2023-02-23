@@ -40,7 +40,7 @@ public class Main {
     // TODO: !!!!!!!!!!!!!! MAKE IT WORK FOR BOTH PP AND SS
 
     // FOR DEBUGGING:
-    public static Random random = new Random(12);
+    public static Random random = new Random(22);
     public static ArrayList<Double> randomNums = new ArrayList<Double>();
 
     public static void main(String[] args) throws IOException {

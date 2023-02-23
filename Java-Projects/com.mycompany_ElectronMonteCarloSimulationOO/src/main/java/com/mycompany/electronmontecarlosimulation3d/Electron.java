@@ -27,7 +27,7 @@ public class Electron {
     public double E;
     public double delta_t; 
 
-    public Electron(Vector startPosition, Vector startVelocity, IGeometry geometry, boolean printThings) {
+    public Electron(Vector startPosition, Vector startVelocity, IGeometry geometry) {
         this.position = startPosition;
         this.velocity = startVelocity;
         this.geometry = geometry;
