@@ -125,7 +125,7 @@ public class SettingsSS {
     SYSTEM OF UNITS
 
     3 fundamental variables: d (in meters), V (voltage in system, in volts), Nc, and Ni
-    derivative quantities: lambda_c = d/Nc, lambda_i = d/Ni, E = V/d, Ui = e*E*lambda_i (an electric potential energy in eV)
+    derived quantities: lambda_c = d/Nc, lambda_i = d/Ni, E = V/d, Ui = e*E*lambda_i (an electric potential energy in eV)
 
     
 

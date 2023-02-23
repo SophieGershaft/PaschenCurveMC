@@ -41,7 +41,6 @@ public class Electron {
     public double setNewPositionsV2(double s) {
 
         printPosVel();
-//        System.out.format("s: %10.5f \n", s);
         // save old things
         double x0 = position.x;
         double K_i = 0.5 * this.m * velocity.Square();
@@ -50,29 +49,28 @@ public class Electron {
         // Euler's method
         while (path < s) {
 //           System.out.format("path: %10.5f \n", path);
-            // increment position
+            // increment position and velocity
             Vector deltaPosition = velocity.multiplyByScalar(delta_t);
-            double delta = deltaPosition.getNorm();
+            double scalarDeltaPosition = deltaPosition.getNorm();
+//            System.out.format("delta: %10.5f \n", scalarDeltaPosition);
             double correctionFactor = 1;
             // if next step will overshoot (last step of Euler's method)
-            if (path + delta > s) {
+            if (path + scalarDeltaPosition > s) {
                 // last step --> correct deltaPosition
                 // correct by decreasing s by rest of path over distance computed
-                correctionFactor = (s - path) / delta;
+                correctionFactor = (s - path) / scalarDeltaPosition;
                 deltaPosition = deltaPosition.multiplyByScalar(correctionFactor);
             }
-            path += delta;
-            position = position.addVectors(deltaPosition);
-
+            path += scalarDeltaPosition;
+            
             // Electric field: find and get magnitude (norm)
-            Efield = geometry.getEfield(position);
-            E = Efield.getNorm();
-            // increment velocity
-            double constant = ((e * E) / m) * delta_t * correctionFactor;
-            Vector deltaVelocity = new Vector(constant, 0, 0);
+            Efield = geometry.getEfield(position);;
+//            System.out.format("Efield: %12.8f %12.8f %12.8f \n", Efield.x, Efield.y, Efield.z);
+            Vector deltaVelocity = Efield.multiplyByScalar((e/m) * delta_t * correctionFactor);
+            
+            position = position.addVectors(deltaPosition);
             velocity = velocity.addVectors(deltaVelocity);
-
-//           System.out.format("path: %10.5f \n", path);
+            printPosVel();
         }
 
         printPosVel();
