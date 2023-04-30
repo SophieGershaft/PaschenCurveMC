@@ -48,7 +48,7 @@ public class Simulation {
     }
     
 
-    public MeanAndError run(boolean printThings, double minCos) {
+    public MeanAndError run(double minCos) {
         stopwatch.start();
         ArrayList<Integer> allElectronCounts = new ArrayList<Integer>();
         ArrayList<Integer> allCollisionCounts = new ArrayList<Integer>();
@@ -73,14 +73,11 @@ public class Simulation {
             // create single electron and add to queue
             Vector startPosition = geometry.cathodeStart();
             Vector startVelocity = new Vector(0, 0, 0);
-            Electron electron = new Electron(startPosition, startVelocity, geometry, printThings);
+            Electron electron = new Electron(startPosition, startVelocity, geometry);
             queue.add(electron);
 
             while (queue.size() > 0) {
                 Electron currElectron = queue.remove();
-                if (printThings) {
-//                    System.out.format("position | x: %.3f, y: %.3f, z: %.3f \n", currElectron.position.x, currElectron.position.y, currElectron.position.z);
-                }
                 double x0;
                 double x1;
                 boolean ionized = false;
@@ -110,30 +107,28 @@ public class Simulation {
                         break;
                     }
                     numCollisions++;
-                    // check if ionized
-                    double v = currElectron.velocity.getNorm();
+                    // check if ionized: 
                     // checks if energy > Ui
-                    ionized = currElectron.checkIonization(v);
+                    ionized = currElectron.checkIonization();
                     // adjust energy and (if ionized) launch new electron
                     double energyLoss;
 
                     if (ionized) {
-//                        System.out.println("ionized");
+                        System.out.println("ionized");
                         numElectrons++;
-                        Electron newElectron = new Electron(currElectron.position, startVelocity, geometry, printThings);
+                        Electron newElectron = new Electron(currElectron.position, startVelocity, geometry);
                         queue.add(newElectron);
                         // energy loss will later subtract Ui amount of energy
                         energyLoss = this.Ui;
                     } else {
                         // if not ionized, subtract smaller amount of energy
-                        double randombit = ((Math.random() * 0.4) + 0.1);
+//                        double randombit = ((Math.random() * 0.4) + 0.1);
                         // FOR DEBUGGING PURPOSES
-//                        double randombit = ((random.nextDouble() * 0.4) + 0.1);
+                        double randombit = ((random.nextDouble() * 0.4) + 0.1);
                         // subtract small amount of energy and scatter
                         energyLoss = this.Ui * randombit;
                     }
 
-                    // NEW!!!
                     // forward scattering
                     currElectron.forwardScatter(energyLoss, minCos);
                 } while (true);
