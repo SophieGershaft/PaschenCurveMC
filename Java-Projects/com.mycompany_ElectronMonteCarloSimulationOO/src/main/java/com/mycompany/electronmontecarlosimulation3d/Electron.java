@@ -35,7 +35,7 @@ public class Electron {
     }
 
     public void printPosVel() {
-//        System.out.format("position: %12.8f %12.8f %12.8f    velocity: %12.8f %12.8f %12.8f \n", position.x, position.y, position.z, velocity.x, velocity.y, velocity.z);
+        System.out.format("position: %12.8f %12.8f %12.8f    velocity: %12.8f %12.8f %12.8f \n", position.x, position.y, position.z, velocity.x, velocity.y, velocity.z);
     }
 
     public double setNewPositionsV2(double s) {
@@ -96,7 +96,7 @@ public class Electron {
     public void forwardScatter(double energyLoss, double minCos) {
         double Ki = 0.5 * m * velocity.Square();
         double Kf = Ki - energyLoss;
-
+        System.out.println("energy after forward scatter: " + Kf);
         if (Kf < 0.0) {
             velocity.x = 0;
             velocity.y = 0;
@@ -137,7 +137,6 @@ public class Electron {
     // check ionization
     boolean checkIonization() {
         double energy = 0.5 * this.m * this.velocity.Square(); // in eV
-        System.out.format("velocity.Square(): %10.8f \n", this.velocity.Square());
         // FOR DEBUGGING
         System.out.println("energy: " + energy);
         double Ui = geometry.getUI();

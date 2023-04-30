@@ -107,8 +107,7 @@ public class Simulation {
                         break;
                     }
                     numCollisions++;
-                    // check if ionized
-                    double v = currElectron.velocity.getNorm();
+                    // check if ionized: 
                     // checks if energy > Ui
                     ionized = currElectron.checkIonization();
                     // adjust energy and (if ionized) launch new electron
