@@ -28,7 +28,7 @@ public class SettingsSS {
 
     private double r1; // inner radius in cm 
     private double r2; // outer radius in cm
-    public double Ui; // in electronvolts
+    private double Ui; // in electronvolts
     private double Nc;
     private double Ni;
     private int count; // unitless, num of electrons to launch

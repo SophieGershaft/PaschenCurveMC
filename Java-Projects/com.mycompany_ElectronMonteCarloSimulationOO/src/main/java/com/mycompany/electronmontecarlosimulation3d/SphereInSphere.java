@@ -76,7 +76,7 @@ public class SphereInSphere implements IGeometry {
         // unit vector r^
         Vector rHat = pos.getUnitVector();
         // calculate Efield in sphere w/ Gauss's Law / Coulomb's Law
-        Vector Efield = rHat.multiplyByScalar((-V * a) / rSquare);
+        Vector Efield = rHat.multiplyByScalar((V * a) / rSquare);
         return Efield;
     }
 
@@ -108,6 +108,7 @@ public class SphereInSphere implements IGeometry {
         double z = r1_a * Math.cos(theta);
         Vector start = new Vector(x, y, z);
 
+//        start = new Vector(r1_a, 0.0, 0.0); --> same thing but runs faster (only in SS bc completely symmetrical)
         // result should be vector w/ properly randomly selected direction
         // point should lie on surface of sphere w/ radius r
         return start;

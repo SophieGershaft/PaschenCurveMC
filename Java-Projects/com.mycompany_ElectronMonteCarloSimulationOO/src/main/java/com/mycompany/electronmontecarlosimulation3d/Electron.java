@@ -14,7 +14,6 @@ import org.apache.commons.math3.analysis.function.Asinh;
  * @author sgershaft
  */
 public class Electron {
-    // TODO: !!!!!! MAKE IT WORK FOR BOTH PP AND SS
 
     Vector position; // in meters
     Vector velocity; // number, fraction of C (just like beta)
@@ -25,7 +24,7 @@ public class Electron {
     public static final double m = 511000; // in eV bc m_e = 511,000 eV
     public Vector Efield;
     public double E;
-    public double delta_t; 
+    public double delta_t;
 
     public Electron(Vector startPosition, Vector startVelocity, IGeometry geometry) {
         this.position = startPosition;
@@ -35,7 +34,70 @@ public class Electron {
     }
 
     public void printPosVel() {
-        System.out.format("position: %12.8f %12.8f %12.8f    velocity: %12.8f %12.8f %12.8f \n", position.x, position.y, position.z, velocity.x, velocity.y, velocity.z);
+//        System.out.format("position: %12.8f %12.8f %12.8f    velocity: %12.8f %12.8f %12.8f \n", position.x, position.y, position.z, velocity.x, velocity.y, velocity.z);
+    }
+
+    public double travel(double sTarget) {
+        printPosVel();
+        // save old things
+        Vector p0 = position;
+        double E0 = -geometry.getEfield(position).getNorm();
+        double K_i = 0.5 * this.m * velocity.Square();
+
+        double s0 = 0;
+        double s1 = 0;
+        // Euler's method
+        while (s0 < sTarget) {
+            // System.out.format("path: %10.5f \n", path);
+            // increment position and velocity
+            // Electric field: find and get magnitude (norm)
+            Efield = geometry.getEfield(position);
+            // System.out.format("Efield: %12.8f %12.8f %12.8f \n", Efield.x, Efield.y, Efield.z);
+            Vector deltaPosition = velocity.multiplyByScalar(delta_t);
+            double scalarDeltaPosition = deltaPosition.getNorm();
+            // System.out.format("delta: %10.5f \n", scalarDeltaPosition);
+            Vector deltaVelocity = Efield.multiplyByScalar((-1.0 / m) * delta_t);
+            s1 += scalarDeltaPosition;
+            
+            if (s1 > sTarget) {
+                break;
+            }
+            
+            s0 = s1;
+            position = position.addVectors(deltaPosition);
+            velocity = velocity.addVectors(deltaVelocity);
+            printPosVel();
+
+        }
+
+        // last step --> correct deltaPosition
+        // correct by decreasing s by rest of path over distance computed
+        double dtLast = (sTarget - s0) / (s1 - s0) * delta_t;
+        Vector deltaPosition = velocity.multiplyByScalar(dtLast);
+        double scalarDeltaPosition = deltaPosition.getNorm();
+        Efield = geometry.getEfield(position);;
+        Vector deltaVelocity = Efield.multiplyByScalar((e / m) * dtLast);
+
+        position = position.addVectors(deltaPosition);
+        velocity = velocity.addVectors(deltaVelocity);
+        printPosVel();
+
+        // find total energy
+        Vector p1 = this.position;
+        // Electric field
+        Efield = geometry.getEfield(position);
+        double E1 = -Efield.getNorm();
+
+        // should be diff between U when working in diff geometry
+        // double deltaU = e * SettingsFresh.getInstance().getE() * (x1 - x0);
+        double K_f = 0.5 * m * this.velocity.Square();
+        double delta_energy = ((E1 + K_f) - (E0 + K_i));
+
+//        System.out.format("K_i: %.3f, K_f: %.3f, deltaU: %.3f \n", K_i, K_f, deltaU);
+//        System.out.println("delta energy (should be ~0)" + delta_energy);
+        // NEW!!!
+        // return a delta_energy for RMS
+        return delta_energy;
     }
 
     public double setNewPositionsV2(double s) {
@@ -62,12 +124,12 @@ public class Electron {
                 deltaPosition = deltaPosition.multiplyByScalar(correctionFactor);
             }
             path += scalarDeltaPosition;
-            
+
             // Electric field: find and get magnitude (norm)
             Efield = geometry.getEfield(position);;
 //            System.out.format("Efield: %12.8f %12.8f %12.8f \n", Efield.x, Efield.y, Efield.z);
-            Vector deltaVelocity = Efield.multiplyByScalar((e/m) * delta_t * correctionFactor);
-            
+            Vector deltaVelocity = Efield.multiplyByScalar((e / m) * delta_t * correctionFactor);
+
             position = position.addVectors(deltaPosition);
             velocity = velocity.addVectors(deltaVelocity);
             printPosVel();
@@ -96,7 +158,7 @@ public class Electron {
     public void forwardScatter(double energyLoss, double minCos) {
         double Ki = 0.5 * m * velocity.Square();
         double Kf = Ki - energyLoss;
-        System.out.println("energy after forward scatter: " + Kf);
+//        System.out.println("energy after forward scatter: " + Kf);
         if (Kf < 0.0) {
             velocity.x = 0;
             velocity.y = 0;
@@ -138,7 +200,7 @@ public class Electron {
     boolean checkIonization() {
         double energy = 0.5 * this.m * this.velocity.Square(); // in eV
         // FOR DEBUGGING
-        System.out.println("energy: " + energy);
+//        System.out.println("energy: " + energy);
         double Ui = geometry.getUI();
         if (energy >= Ui) {
             return true;

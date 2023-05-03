@@ -72,6 +72,7 @@ public class Simulation {
 
             // create single electron and add to queue
             Vector startPosition = geometry.cathodeStart();
+//            System.out.format("start position: %10.3f %10.3f %10.3f \n", startPosition.x, startPosition.y, startPosition.z);
             Vector startVelocity = new Vector(0, 0, 0);
             Electron electron = new Electron(startPosition, startVelocity, geometry);
             queue.add(electron);
@@ -92,7 +93,7 @@ public class Simulation {
                     // update position using vector addition to add components, update velocity
                     x0 = currElectron.position.x;
                     // save delta energy square after updating position and velocity
-                    double delta_energy = currElectron.setNewPositionsV2(s);
+                    double delta_energy = currElectron.travel(s);
                     deSumSquare += (delta_energy * delta_energy);
                     deCount++;
                     // update position after
@@ -100,7 +101,7 @@ public class Simulation {
 
                     // check if between electrodes
                     reachedAnode = geometry.isAnode(currElectron.position);
-                    isCathode = geometry.isCathode(currElectron.position);
+//                    isCathode = geometry.isCathode(currElectron.position);
                     // NOTE this can cause problems if the electron doesn't move the first time
                     if (reachedAnode || isCathode) {
 //                        System.out.println("reached anode");
@@ -114,7 +115,7 @@ public class Simulation {
                     double energyLoss;
 
                     if (ionized) {
-                        System.out.println("ionized");
+//                        System.out.println("ionized");
                         numElectrons++;
                         Electron newElectron = new Electron(currElectron.position, startVelocity, geometry);
                         queue.add(newElectron);

@@ -29,6 +29,7 @@ public class Vector {
         return (x * x + y * y + z * z);
     }
 
+    // only for PP
     public double getTransverseComponent() {
         return Math.sqrt(y * y + z * z);
     }
@@ -82,7 +83,7 @@ public class Vector {
             v.y = -this.z;
             v.z = this.y;
         }
-        v.getUnitVector();
+        v = v.getUnitVector();
         return v;
     }
     

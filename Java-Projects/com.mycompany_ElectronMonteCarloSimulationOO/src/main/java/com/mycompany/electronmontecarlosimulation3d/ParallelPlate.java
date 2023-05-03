@@ -62,7 +62,7 @@ public class ParallelPlate implements IGeometry {
 
     @Override
     public Vector getEfield(Vector pos) {
-        Vector Efield = new Vector(-V / d, 0, 0);
+        Vector Efield = new Vector(V / d, 0, 0);
         return Efield;
     }
 
