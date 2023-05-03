@@ -104,11 +104,11 @@ public class SphereInSphere implements IGeometry {
         double r1_a = r1 + 1e-9 * (r2 - r1);
 
         double x = r1_a * Math.sin(theta) * Math.cos(phi);
-        double y = r1_a * Math.sin(theta) * Math.sin(phi);
-        double z = r1_a * Math.cos(theta);
-        Vector start = new Vector(x, y, z);
+//        double y = r1_a * Math.sin(theta) * Math.sin(phi);
+//        double z = r1_a * Math.cos(theta);
+//        Vector start = new Vector(x, y, z);
 
-//        start = new Vector(r1_a, 0.0, 0.0); --> same thing but runs faster (only in SS bc completely symmetrical)
+        Vector start = new Vector(r1_a, 0.0, 0.0); // --> same thing as above but runs faster (only in SS bc completely symmetrical)
         // result should be vector w/ properly randomly selected direction
         // point should lie on surface of sphere w/ radius r
         return start;

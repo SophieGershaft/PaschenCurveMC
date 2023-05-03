@@ -73,6 +73,8 @@ public class Main {
 //        runForManyRatiosOldPP(geometry, 1.0, 4.0, 1.0, 0.5, 8.5, 0.5, 1000);
 //        findPointOnPaschenCurveLitePP(5.0, 20.0, 21.8, 11);
 
+//            findPointOnPaschenCurveLiteSS(10.0, 5.0, 15.0, 11);
+
 //        randomSeedTester();
 
         ArrayList<MeanAndError> theResults = new ArrayList<MeanAndError>();
@@ -120,6 +122,25 @@ public class Main {
 
             // TEMPORARY SOLUTION : still need factory function to make it run w/ both PP and SS
             IGeometry geometry = new ParallelPlate(random);
+            Simulation sim = new Simulation(geometry, random);
+
+            MeanAndError result = sim.run(0.8);
+            results.add(result);
+            System.out.println(result);
+        }
+        String filename = String.format("results_Nc_%s.json", Nc);
+        writeJSON(results, filename);
+    }
+    
+    public static void findPointOnPaschenCurveLiteSS(double Nc, double NiStart, double NiEnd, int numSteps) throws IOException {
+        ArrayList<MeanAndError> results = new ArrayList<MeanAndError>();
+        double increment = (NiEnd - NiStart) / numSteps;
+        for (double Ni = NiStart; Ni <= NiEnd; Ni += increment) {
+            SettingsSS.getInstance().setNc(Nc);
+            SettingsSS.getInstance().setNi(Ni);
+
+            // TEMPORARY SOLUTION : still need factory function to make it run w/ both PP and SS
+            IGeometry geometry = new SphereInSphere(random);
             Simulation sim = new Simulation(geometry, random);
 
             MeanAndError result = sim.run(0.8);

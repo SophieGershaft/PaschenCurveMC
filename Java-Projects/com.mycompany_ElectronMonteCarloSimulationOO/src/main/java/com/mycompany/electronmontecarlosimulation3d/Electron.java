@@ -20,7 +20,7 @@ public class Electron {
     IGeometry geometry;
 
 //    boolean showPath;// showPath enables printing positions of collisions TO DO
-    public static final double e = 1; // 1 electron charge (charge of electron)
+    public static final double e = 1.0; // 1 electron charge (charge of electron)
     public static final double m = 511000; // in eV bc m_e = 511,000 eV
     public Vector Efield;
     public double E;
@@ -46,6 +46,8 @@ public class Electron {
 
         double s0 = 0;
         double s1 = 0;
+        
+        double scalar = (-1.0 / m) * delta_t;
         // Euler's method
         while (s0 < sTarget) {
             // System.out.format("path: %10.5f \n", path);
@@ -56,7 +58,7 @@ public class Electron {
             Vector deltaPosition = velocity.multiplyByScalar(delta_t);
             double scalarDeltaPosition = deltaPosition.getNorm();
             // System.out.format("delta: %10.5f \n", scalarDeltaPosition);
-            Vector deltaVelocity = Efield.multiplyByScalar((-1.0 / m) * delta_t);
+            Vector deltaVelocity = Efield.multiplyByScalar(scalar);
             s1 += scalarDeltaPosition;
             
             if (s1 > sTarget) {
@@ -75,7 +77,7 @@ public class Electron {
         double dtLast = (sTarget - s0) / (s1 - s0) * delta_t;
         Vector deltaPosition = velocity.multiplyByScalar(dtLast);
         double scalarDeltaPosition = deltaPosition.getNorm();
-        Efield = geometry.getEfield(position);;
+        Efield = geometry.getEfield(position);
         Vector deltaVelocity = Efield.multiplyByScalar((e / m) * dtLast);
 
         position = position.addVectors(deltaPosition);

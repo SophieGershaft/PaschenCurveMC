@@ -33,6 +33,14 @@ public class Vector {
     public double getTransverseComponent() {
         return Math.sqrt(y * y + z * z);
     }
+    
+    public Vector mutateAddVector(Vector other) {
+        // add a new vector to the current vector by adding components
+        this.x += other.x;
+        this.y += other.y;
+        this.z += other.z;
+        return this;
+    }
 
     public Vector addVectors(Vector other) {
         // add a new vector to the current vector by adding components
@@ -43,6 +51,7 @@ public class Vector {
         return newVector;
     }
     
+    // MAKE MUTATE MULTIPLY BY SCALAR
     public Vector multiplyByScalar(double scalar) {
         // multiply this (current vector) by a scalar
         double newX = this.x * scalar;
@@ -52,6 +61,7 @@ public class Vector {
         return newVector;
     }
     
+    // MAKE MUTATE GET UNIT VECTOR
     public Vector getUnitVector() {
         // multiply each component by 1/norm (1/magnitude)
         // keep direction, make norm = 1
