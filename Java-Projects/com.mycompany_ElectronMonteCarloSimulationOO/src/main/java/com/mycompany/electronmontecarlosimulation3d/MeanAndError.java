@@ -20,6 +20,6 @@ public class MeanAndError {
     
     @Override
     public String toString() {
-        return String.format("mean electrons: %.3f +-%.3f, Nc: %.3f, Ni: %.3f lambda_i: %.3f, mean collisions: %.3f +-%.3f \n", mean, error, Nc, Ni, lambda_i, mean_c, error_c);
+        return String.format("mean ions: %.3f +-%.3f, Nc: %.3f, Ni: %.3f lambda_i: %.3f, mean collisions: %.3f +-%.3f \n", mean, error, Nc, Ni, lambda_i, mean_c, error_c);
     }
 }

@@ -29,8 +29,17 @@ public class Vector {
         return (x * x + y * y + z * z);
     }
 
+    // only for PP
     public double getTransverseComponent() {
         return Math.sqrt(y * y + z * z);
+    }
+    
+    public Vector mutateAddVector(Vector other) {
+        // add a new vector to the current vector by adding components
+        this.x += other.x;
+        this.y += other.y;
+        this.z += other.z;
+        return this;
     }
 
     public Vector addVectors(Vector other) {
@@ -42,6 +51,7 @@ public class Vector {
         return newVector;
     }
     
+    // MAKE MUTATE MULTIPLY BY SCALAR
     public Vector multiplyByScalar(double scalar) {
         // multiply this (current vector) by a scalar
         double newX = this.x * scalar;
@@ -51,6 +61,7 @@ public class Vector {
         return newVector;
     }
     
+    // MAKE MUTATE GET UNIT VECTOR
     public Vector getUnitVector() {
         // multiply each component by 1/norm (1/magnitude)
         // keep direction, make norm = 1
@@ -82,7 +93,7 @@ public class Vector {
             v.y = -this.z;
             v.z = this.y;
         }
-        v.getUnitVector();
+        v = v.getUnitVector();
         return v;
     }
     

@@ -51,10 +51,13 @@ public class Simulation {
     public MeanAndError run(double minCos) {
         stopwatch.start();
         ArrayList<Integer> allElectronCounts = new ArrayList<Integer>();
+        ArrayList<Integer> allIonCounts = new ArrayList<Integer>();
         ArrayList<Integer> allCollisionCounts = new ArrayList<Integer>();
         ArrayList<Integer> allDeltaEnergyCounts = new ArrayList<Integer>();
         double meanElectrons;
         double eError;
+        double meanIons;
+        double iError;
         double meanCollisions;
         double cError;
         double deSumSquare = 0;
@@ -68,10 +71,12 @@ public class Simulation {
         // simulation loop:
         for (int i = 0; i < count; i++) {
             int numElectrons = 1;
+            int numIons = 0;
             int numCollisions = 0;
 
             // create single electron and add to queue
             Vector startPosition = geometry.cathodeStart();
+//            System.out.format("start position: %10.3f %10.3f %10.3f \n", startPosition.x, startPosition.y, startPosition.z);
             Vector startVelocity = new Vector(0, 0, 0);
             Electron electron = new Electron(startPosition, startVelocity, geometry);
             queue.add(electron);
@@ -86,21 +91,16 @@ public class Simulation {
 
                 do {
                     double s = Distributions.inverseCDFexponential(this.lambda, random);
-                    // NOTE: THIS IS JUST FOR DEBUGGING !!!!!!!!!!
 //                    System.out.println("new s: " + s);
 
-                    // update position using vector addition to add components, update velocity
-                    x0 = currElectron.position.x;
                     // save delta energy square after updating position and velocity
-                    double delta_energy = currElectron.setNewPositionsV2(s);
+                    double delta_energy = currElectron.travel(s);
                     deSumSquare += (delta_energy * delta_energy);
                     deCount++;
-                    // update position after
-                    x1 = currElectron.position.x;
 
                     // check if between electrodes
                     reachedAnode = geometry.isAnode(currElectron.position);
-                    isCathode = geometry.isCathode(currElectron.position);
+//                    isCathode = geometry.isCathode(currElectron.position);
                     // NOTE this can cause problems if the electron doesn't move the first time
                     if (reachedAnode || isCathode) {
 //                        System.out.println("reached anode");
@@ -114,10 +114,11 @@ public class Simulation {
                     double energyLoss;
 
                     if (ionized) {
-                        System.out.println("ionized");
-                        numElectrons++;
+//                        System.out.println("ionized");
                         Electron newElectron = new Electron(currElectron.position, startVelocity, geometry);
                         queue.add(newElectron);
+                        numElectrons++;
+                        numIons++;
                         // energy loss will later subtract Ui amount of energy
                         energyLoss = this.Ui;
                     } else {
@@ -134,6 +135,7 @@ public class Simulation {
                 } while (true);
             }
             allElectronCounts.add(numElectrons);
+            allIonCounts.add(numIons);
             allCollisionCounts.add(numCollisions);
             allDeltaEnergyCounts.add(deCount);
         }
@@ -150,9 +152,14 @@ public class Simulation {
         for (int colCount : allCollisionCounts) {
             cSum += colCount;
         }
+        int iSum = 0;
+        for (int iCount : allIonCounts) {
+            iSum += iCount;
+        }
         // mean over all the electrons launched to find out mean per sim run
-        meanElectrons = eSum / count;
-        meanCollisions = cSum / count;
+        meanElectrons = ((double)eSum) / count;
+        meanIons = ((double)iSum) / count;
+        meanCollisions = ((double)cSum) / count;
 
         // finish Root Mean Square (RMS) of delta energies
         meanSquareDeltaEnergies = deSumSquare / deCount;
@@ -164,10 +171,15 @@ public class Simulation {
         // find standard deviation
         double SSR_e = 0;
         double stdev_e;
+        double SSR_i = 0;
+        double stdev_i;
         double SSR_c = 0;
         double stdev_c = 0;
         for (int currCount : allElectronCounts) {
             SSR_e += (Math.abs(meanElectrons - currCount) * Math.abs(meanElectrons - currCount));
+        }
+        for (int currICount : allIonCounts) {
+            SSR_i += (Math.abs(meanIons - currICount) * Math.abs(meanIons - currICount));
         }
         for (int currColCount : allCollisionCounts) {
             SSR_c += (Math.abs(meanCollisions - currColCount) * Math.abs(meanCollisions - currColCount));
@@ -175,12 +187,15 @@ public class Simulation {
         // find error on the mean
         stdev_e = Math.sqrt(SSR_e / count);
         eError = stdev_e / Math.sqrt(count);
+        stdev_i = Math.sqrt(SSR_i / count);
+        iError = stdev_i / Math.sqrt(count);
         stdev_c = Math.sqrt(SSR_c / count);
         cError = stdev_c / Math.sqrt(count);
         // package for returning
         MeanAndError result = new MeanAndError();
-        result.mean = meanElectrons;
-        result.error = eError;
+        // IMPORTANT!!!!! IF I WANT TO COUNT AND REPORT ELECTRONS, JUST SWITCH THIS FROM MEAN IONS TO MEAN ELECTRONS BELOW
+        result.mean = meanIons;
+        result.error = iError;
         result.mean_c = meanCollisions;
         result.error_c = cError;
         result.Nc = this.Nc;
