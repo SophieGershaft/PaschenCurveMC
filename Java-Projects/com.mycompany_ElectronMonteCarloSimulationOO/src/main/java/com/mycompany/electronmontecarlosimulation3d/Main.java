@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Random;
+import java.io.*;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.cli.BasicParser;
@@ -47,7 +49,7 @@ public class Main {
         System.out.println("Parameters: " + String.join(",", args));
         // To support multiple settings --> use command-line arguments.
         CommandLine cmdLine = parseArguments(args);
-        
+
         String resource;
         IGeometry geometry = null;
         if (cmdLine.hasOption("input")) {
@@ -62,26 +64,35 @@ public class Main {
             // get geometry
             geometry = createGeometry(file.getAbsolutePath(), random);
         }
-
-        // TODO: print all settings + include in results file 
+ 
+        /* 
         Simulation sim = new Simulation(geometry, random);
         MeanAndError result = sim.run(0.8); // printThings, forwardScatter
-        System.out.println(result);
+//        System.out.println(result);
+        System.out.println("{" + result.Nc + ", Around[" + result.mean + ", " + result.error + "]},");
         
-//        runForRatioPP(geometry, 1.0, 0.2, 14.0, 0.8, 1000);
-        // BAD AND BUGGY
-//        runForManyRatiosOldPP(geometry, 1.0, 4.0, 1.0, 0.5, 8.5, 0.5, 1000);
-//        findPointOnPaschenCurveLitePP(5.0, 20.0, 21.8, 11);
-
-//            findPointOnPaschenCurveLiteSS(10.0, 5.0, 15.0, 11);
 
 //        randomSeedTester();
-
         ArrayList<MeanAndError> theResults = new ArrayList<MeanAndError>();
         theResults.add(result);
         writeJSON(theResults, "results.json");
+        */
+        
+//        findPointOnPaschenCurveLiteSS(60.0, 16.0, 18.5, 11);
+        
+//        System.out.println(LegendrePolynomials.P(2, 1));
 
-//        findPointOnPaschenCurveLitePP(110, 27.5, 28, 11, random);
+
+        // MAIN METHOD FROM INTERPOLATION
+        
+        // load scpotential from file (see function below)
+        Interpolation.makeScPotential("C:\\Users\\sgershaft\\github\\Paschen-Paper-January\\Java-Projects\\com.mycompany_ElectronMonteCarloSimulationOO\\src\\main\\resources\\phi.txt");
+       
+        // do a test. expected output: {0.130789, 0.161607, 0.359219}
+        System.out.println(Arrays.toString(Interpolation.getEFieldSC(10, 2.784, 3.44, 5.775)));
+        
+        // do a test. expected output: 0.520356
+        System.out.println(Interpolation.getPotentialSC(10, 2.784, 3.44, 5.775));
     }
 
     // create geometry based on json input file
@@ -131,7 +142,7 @@ public class Main {
         String filename = String.format("results_Nc_%s.json", Nc);
         writeJSON(results, filename);
     }
-    
+
     public static void findPointOnPaschenCurveLiteSS(double Nc, double NiStart, double NiEnd, int numSteps) throws IOException {
         ArrayList<MeanAndError> results = new ArrayList<MeanAndError>();
         double increment = (NiEnd - NiStart) / numSteps;
@@ -145,7 +156,8 @@ public class Main {
 
             MeanAndError result = sim.run(0.8);
             results.add(result);
-            System.out.println(result);
+//            System.out.println(result);
+            System.out.println("{" + result.Nc + ", Around[" + result.mean + ", " + result.error + "]},");
         }
         String filename = String.format("results_Nc_%s.json", Nc);
         writeJSON(results, filename);
@@ -166,9 +178,9 @@ public class Main {
             System.out.println("fully done!");
         }
     }
-    
+
     // THIS HAS BUGS
-        public static void runForManyRatiosPP(IGeometry geometry, double rStart, double rEnd, double rIncrement, double startNc, double endNc, double NcIncrement, int count) throws IOException {
+    public static void runForManyRatiosPP(IGeometry geometry, double rStart, double rEnd, double rIncrement, double startNc, double endNc, double NcIncrement, int count) throws IOException {
         for (double ratio = rStart; ratio <= rEnd; ratio += rIncrement) {
             runForRatioPP(geometry, ratio, startNc, endNc, NcIncrement, count);
         }
@@ -184,11 +196,11 @@ public class Main {
             SettingsPP.getInstance().setNi(Nc * (1 / ratio));
             SettingsPP.getInstance().setCount(count);
             geometry = new ParallelPlate(random);
-            
+
             Simulation sim = new Simulation(geometry, random);
             MeanAndError result = sim.run(0.8);
             System.out.println(result);
-            
+
             // MATHEMATICA STYLE PRINTING:
 //            System.out.println("{" + result.Nc + ", Around[" + result.mean + ", " + result.error + "]},");
             theResults.add(result);
@@ -198,12 +210,12 @@ public class Main {
     }
 
     // THIS HAS BUGS
-        public static void runForManyRatiosOldPP(IGeometry geometry, double rStart, double rEnd, double rIncrement, double dStart, double dEnd, double dIncrement, int count) throws IOException {
+    public static void runForManyRatiosOldPP(IGeometry geometry, double rStart, double rEnd, double rIncrement, double dStart, double dEnd, double dIncrement, int count) throws IOException {
         for (double ratio = rStart; ratio <= rEnd; ratio += rIncrement) {
             runForRatioPP(geometry, ratio, dStart, dEnd, dIncrement, count);
         }
     }
-        
+
     // runs simulations for varying values of anode_pos, voltage, and Nc for a single ratio
     public static void runForOneRatioPP(IGeometry geometry, double ratio, double dStart, double dEnd, double increment, int count) throws IOException {
         ArrayList<MeanAndError> theResults = new ArrayList<MeanAndError>();
