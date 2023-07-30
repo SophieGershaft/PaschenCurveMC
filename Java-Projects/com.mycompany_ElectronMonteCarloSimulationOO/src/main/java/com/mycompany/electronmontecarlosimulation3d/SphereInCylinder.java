@@ -11,8 +11,7 @@ import java.util.Random;
  *
  * @author sgershaft
  */
-public class SphereInSphere implements IGeometry {
-
+public class SphereInCylinder implements IGeometry {
     double r1;
     double r2;
     double a;
@@ -29,25 +28,21 @@ public class SphereInSphere implements IGeometry {
     double Nc;
     double Ni;
 
-    public SphereInSphere(Random random) {
+    public SphereInCylinder(Random random) {
         // compute a and b
-        this.r1 = SettingsSS.getInstance().getRInner();
-        this.r2 = SettingsSS.getInstance().getROuter();
-        this.b = r1 / (r2 - r1);
-        this.a = -r2 * b;
-        this.V = SettingsSS.getInstance().getV();
+        this.r1 = SettingsSC.getInstance().getRSphere();
+        this.r2 = SettingsSC.getInstance().getRCylinder();
+        this.V = SettingsSC.getInstance().getV();
         this.random = random;
-        // a/r2 + b = 0 --> anode
-        // a/r1 + b = b(1 - r2/r1) = b(r1-r2)/r1 = -1 --> cathode
         // initialize things
-        this.lambda = SettingsSS.getInstance().getLambda();
-        this.lambda_i = SettingsSS.getInstance().getLambdaI();
-        this.count = SettingsSS.getInstance().getCount();
-        this.Ui = SettingsSS.getInstance().getUI();
+        this.lambda = SettingsSC.getInstance().getLambda();
+        this.lambda_i = SettingsSC.getInstance().getLambdaI();
+        this.count = SettingsSC.getInstance().getCount();
+        this.Ui = SettingsSC.getInstance().getUI();
 
-        this.delta_t = SettingsSS.getInstance().getDeltaT();
-        this.Nc = SettingsSS.getInstance().getNc();
-        this.Ni = SettingsSS.getInstance().getNi();
+        this.delta_t = SettingsSC.getInstance().getDeltaT();
+        this.Nc = SettingsSC.getInstance().getNc();
+        this.Ni = SettingsSC.getInstance().getNi();
     }
 
     @Override
@@ -56,42 +51,35 @@ public class SphereInSphere implements IGeometry {
         return (r.getNorm() < r1);
     }
 
-    // FIX THIS TO WORK WITH CYLINDER
+    // FIX THIS TO WORK WITH CYLINDER ANODE
     @Override
     public boolean isAnode(Vector r) {
         // if magntiude of r is >= radius to anode --> on or outside anode
         return (r.getNorm() >= r2);
     }
 
-    // FUTURE: RETHINK WHETHER I CAN SPEED IT UP BY NOT CALLING THINGS TWICE
     @Override
     public Vector getEfield(Vector pos) {
-        double rSquare = pos.Square();
-        double r = pos.getNorm();
-        // TODO: SHOULD USE ISCATHODE OR ISANODE
-        if (r < r1 || r >= r2) {
-            // inside cathode or outside anode (or inside the metal) --> Efield = 0
-            Vector Efield = new Vector(0, 0, 0);
-            return Efield;
-        }
-        // unit vector r^
-        Vector rHat = pos.getUnitVector();
-        // calculate Efield in sphere w/ Gauss's Law / Coulomb's Law
-        Vector Efield = rHat.multiplyByScalar((V * a) / rSquare);
+        double x = pos.x;
+        double y = pos.y;
+        double z = pos.z;
+        
+        Vector Efield = new Vector(0, 0, 0);
+        double[] res = Interpolation.getEFieldSC(this.V, x, y, z);
+        Efield.x = res[0];
+        Efield.y = res[1];
+        Efield.z = res[2];
         return Efield;
     }
 
     @Override
     public double getPotential(Vector pos) {
-        double radius = pos.getNorm();
-        // TODO: SHOULD USE ISCATHODE OR ISANODE !
-        if (radius < r1) {
-            return -V;
-        }
-        if (radius >= r2) {
-            return 0.0;
-        }
-        return V * (a / radius + b);
+        double x = pos.x;
+        double y = pos.y;
+        double z = pos.z;
+        
+        double potential = Interpolation.getPotentialSC(this.V, x, y, z);
+        return potential;
     }
 
     @Override

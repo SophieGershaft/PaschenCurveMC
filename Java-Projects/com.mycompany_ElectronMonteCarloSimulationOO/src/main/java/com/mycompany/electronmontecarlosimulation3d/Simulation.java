@@ -45,6 +45,7 @@ public class Simulation {
         this.lambda_i = this.geometry.getLambdaI();
         this.count = this.geometry.getCount();
         this.Ui = this.geometry.getUI();
+        Interpolation.makeScPotential("C:\\Users\\sgershaft\\github\\Paschen-Paper-January\\Java-Projects\\com.mycompany_ElectronMonteCarloSimulationOO\\src\\main\\resources\\phi.txt");
     }
     
 

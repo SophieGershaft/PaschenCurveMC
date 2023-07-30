@@ -64,7 +64,7 @@ public class Main {
             // get geometry
             geometry = createGeometry(file.getAbsolutePath(), random);
         }
- 
+
         /* 
         Simulation sim = new Simulation(geometry, random);
         MeanAndError result = sim.run(0.8); // printThings, forwardScatter
@@ -76,26 +76,35 @@ public class Main {
         ArrayList<MeanAndError> theResults = new ArrayList<MeanAndError>();
         theResults.add(result);
         writeJSON(theResults, "results.json");
-        */
-        
+         */
 //        findPointOnPaschenCurveLiteSS(60.0, 16.0, 18.5, 11);
-        
 //        System.out.println(LegendrePolynomials.P(2, 1));
-
-
         // MAIN METHOD FROM INTERPOLATION
-        
         // load scpotential from file (see function below)
         Interpolation.makeScPotential("C:\\Users\\sgershaft\\github\\Paschen-Paper-January\\Java-Projects\\com.mycompany_ElectronMonteCarloSimulationOO\\src\\main\\resources\\phi.txt");
-       
+
         // do a test. expected output: {0.130789, 0.161607, 0.359219}
         System.out.println(Arrays.toString(Interpolation.getEFieldSC(10, 2.784, 3.44, 5.775)));
-        
+
         // do a test. expected output: 0.520356
         System.out.println(Interpolation.getPotentialSC(10, 2.784, 3.44, 5.775));
-    }
 
-    // create geometry based on json input file
+/*   TEST CHOLESKY DECOMPOSITION     
+int N = 3;
+        double[][] A = {{4, 1, 1},
+        {1, 5, 3},
+        {1, 3, 15}
+        };
+        double[][] L = Cholesky.cholesky(A);
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                System.out.format("%8.5f ", L[i][j]);
+            }
+            System.out.println();
+        }
+*/
+    }
+        // create geometry based on json input file
     public static IGeometry createGeometry(String fileName, Random random) {
         try {
             // parsing JSON file: can it be parsed as parallel plate?
