@@ -12,36 +12,31 @@ import java.util.Random;
  * @author sgershaft
  */
 public class SphereInCylinder implements IGeometry {
+
     double r1;
     double r2;
-    double a;
-    double b;
+    double h;
     double V;
     Random random;
 
     // initialize these settings
     double lambda;
-    double lambda_i;
     int count;
     double Ui;
     double delta_t;
-    double Nc;
     double Ni;
 
     public SphereInCylinder(Random random) {
-        // compute a and b
+        // initialize things
         this.r1 = SettingsSC.getInstance().getRSphere();
         this.r2 = SettingsSC.getInstance().getRCylinder();
+        this.h = SettingsSC.getInstance().getH();
         this.V = SettingsSC.getInstance().getV();
         this.random = random;
-        // initialize things
         this.lambda = SettingsSC.getInstance().getLambda();
-        this.lambda_i = SettingsSC.getInstance().getLambdaI();
         this.count = SettingsSC.getInstance().getCount();
         this.Ui = SettingsSC.getInstance().getUI();
-
         this.delta_t = SettingsSC.getInstance().getDeltaT();
-        this.Nc = SettingsSC.getInstance().getNc();
         this.Ni = SettingsSC.getInstance().getNi();
     }
 
@@ -51,11 +46,12 @@ public class SphereInCylinder implements IGeometry {
         return (r.getNorm() < r1);
     }
 
-    // FIX THIS TO WORK WITH CYLINDER ANODE
+    // TEST THIS TO MAKE SURE IT WORKS
     @Override
     public boolean isAnode(Vector r) {
-        // if magntiude of r is >= radius to anode --> on or outside anode
-        return (r.getNorm() >= r2);
+        // if magntiude of sqrt(x^2 + y^2) is >= cylinder radius to anode --> on or outside anode
+        // if z is <= -h/2 or >= h/2  --> on or outside anode
+        return ((r.x * r.x)+(r.y * r.y) >= r2*r2 || (r.z <= -h/2) || (r.z >= h/2));
     }
 
     @Override
@@ -63,7 +59,7 @@ public class SphereInCylinder implements IGeometry {
         double x = pos.x;
         double y = pos.y;
         double z = pos.z;
-        
+
         Vector Efield = new Vector(0, 0, 0);
         double[] res = Interpolation.getEFieldSC(this.V, x, y, z);
         Efield.x = res[0];
@@ -77,7 +73,7 @@ public class SphereInCylinder implements IGeometry {
         double x = pos.x;
         double y = pos.y;
         double z = pos.z;
-        
+
         double potential = Interpolation.getPotentialSC(this.V, x, y, z);
         return potential;
     }
@@ -90,14 +86,15 @@ public class SphereInCylinder implements IGeometry {
         double phi = u * 2 * Math.PI;
         // 2*v - 1 is cos(theta)
         double theta = Math.acos(2 * v - 1);
-        double r1_a = r1 + 1e-9 * (r2 - r1);
+        double r1a = r1 + 1e-8;
+        
 
-        double x = r1_a * Math.sin(theta) * Math.cos(phi);
-//        double y = r1_a * Math.sin(theta) * Math.sin(phi);
-//        double z = r1_a * Math.cos(theta);
-//        Vector start = new Vector(x, y, z);
+        double x = r1a * Math.sin(theta) * Math.cos(phi);
+        double y = r1a * Math.sin(theta) * Math.sin(phi);
+        double z = r1a * Math.cos(theta);
+        Vector start = new Vector(x, y, z);
 
-        Vector start = new Vector(r1_a, 0.0, 0.0); // --> same thing as above but runs faster (only in SS bc completely symmetrical)
+//        Vector start = new Vector(r1_a, 0.0, 0.0); // --> same thing as above but runs faster (only in SS bc completely symmetrical)
         // result should be vector w/ properly randomly selected direction
         // point should lie on surface of sphere w/ radius r
         return start;
@@ -120,7 +117,8 @@ public class SphereInCylinder implements IGeometry {
 
     @Override
     public double getLambdaI() {
-        return lambda_i;
+        // THIS IS BAD --> throw an exception
+        return 0.0;
     }
 
     @Override
@@ -130,12 +128,13 @@ public class SphereInCylinder implements IGeometry {
 
     @Override
     public double getNc() {
-        return Nc;
+        // THIS IS BAD --> throw an exception
+        return 0.0;
     }
 
     @Override
     public double getNi() {
         return Ni;
     }
-    
+
 }

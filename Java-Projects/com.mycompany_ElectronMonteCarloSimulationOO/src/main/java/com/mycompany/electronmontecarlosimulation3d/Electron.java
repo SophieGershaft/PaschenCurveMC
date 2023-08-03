@@ -15,7 +15,7 @@ import org.apache.commons.math3.analysis.function.Asinh;
  */
 public class Electron {
 
-    Vector position; // in meters
+    Vector position; // in meters or is it cm ??
     Vector velocity; // number, fraction of C (just like beta)
     IGeometry geometry;
 

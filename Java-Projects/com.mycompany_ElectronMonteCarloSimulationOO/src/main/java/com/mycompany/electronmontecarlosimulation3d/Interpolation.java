@@ -66,6 +66,11 @@ public class Interpolation {
         }
         int i = (int) Math.floor((double) z / gs);
         int j = (int) Math.floor((double) rho / gs);
+        // CHECK TO MAKE SURE THIS IS LOGICAL 
+        if (i >= 730 || j >= 730) {
+            double[] eZero = {0, 0, 0};
+            return eZero;
+        }
         double alpha = z / gs - (double) i;
         double beta = rho / gs - (double) j;
 
@@ -80,9 +85,15 @@ public class Interpolation {
         if (flip) {
             ez = -ez;
         }
+        /*
         double ex = -1 * v * x * erho / rho;
         double ey = -1 * v * y * erho / rho;
         ez = - 1 * v * ez;
+        */
+        
+        double ex = v * x * erho / rho;
+        double ey = v * y * erho / rho;
+        ez = v * ez;
         double[] res = {ex, ey, ez};
         return res;
     }

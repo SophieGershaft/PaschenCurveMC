@@ -65,31 +65,30 @@ public class Main {
             geometry = createGeometry(file.getAbsolutePath(), random);
         }
 
-        /* 
         Simulation sim = new Simulation(geometry, random);
         MeanAndError result = sim.run(0.8); // printThings, forwardScatter
 //        System.out.println(result);
-        System.out.println("{" + result.Nc + ", Around[" + result.mean + ", " + result.error + "]},");
-        
+        System.out.println("Around[" + result.mean + ", " + result.error + "]},");
+        System.out.println("collisions: " + result.mean_c);
 
 //        randomSeedTester();
         ArrayList<MeanAndError> theResults = new ArrayList<MeanAndError>();
         theResults.add(result);
         writeJSON(theResults, "results.json");
-         */
-//        findPointOnPaschenCurveLiteSS(60.0, 16.0, 18.5, 11);
+
+//        findPointOnPaschenCurveLiteSS(4.0, 100.0, 150.0, 5);
 //        System.out.println(LegendrePolynomials.P(2, 1));
         // MAIN METHOD FROM INTERPOLATION
         // load scpotential from file (see function below)
         Interpolation.makeScPotential("C:\\Users\\sgershaft\\github\\Paschen-Paper-January\\Java-Projects\\com.mycompany_ElectronMonteCarloSimulationOO\\src\\main\\resources\\phi.txt");
 
         // do a test. expected output: {0.130789, 0.161607, 0.359219}
-        System.out.println(Arrays.toString(Interpolation.getEFieldSC(10, 2.784, 3.44, 5.775)));
-
+//        System.out.println(Arrays.toString(Interpolation.getEFieldSC(10, 2.784, 3.44, 5.775)));
+//        System.out.println(Arrays.toString(Interpolation.getEFieldSC(1, 1.2, -3.7, -2.3)));
         // do a test. expected output: 0.520356
-        System.out.println(Interpolation.getPotentialSC(10, 2.784, 3.44, 5.775));
+//        System.out.println(Interpolation.getPotentialSC(10, 2.784, 3.44, 5.775));
 
-/*   TEST CHOLESKY DECOMPOSITION     
+        /*   TEST CHOLESKY DECOMPOSITION     
 int N = 3;
         double[][] A = {{4, 1, 1},
         {1, 5, 3},
@@ -102,9 +101,10 @@ int N = 3;
             }
             System.out.println();
         }
-*/
+         */
     }
-        // create geometry based on json input file
+    // create geometry based on json input file
+
     public static IGeometry createGeometry(String fileName, Random random) {
         try {
             // parsing JSON file: can it be parsed as parallel plate?
@@ -115,24 +115,34 @@ int N = 3;
             return geometry;
         } catch (IOException e) {
             try {
-                // can it be parsed as a sphere in sphere?
-                SettingsSS.fromJSON(fileName);
-                // create and return SphereInSphere geometry
-                IGeometry geometry = new SphereInSphere(random);
-                System.out.println("Sphere in Sphere");
+                // can it be parsed as a sphere in cylinder?
+                SettingsSC.fromJSON(fileName);
+                // create and return SphereInCylinder geometry
+                IGeometry geometry = new SphereInCylinder(random);
+                System.out.println("Sphere in Cylinder");
                 // initialize geometry with values from settings
                 return geometry;
-            } catch (IOException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ee) {
+                try {
+                    // can it be parsed as a sphere in sphere?
+                    SettingsSS.fromJSON(fileName);
+                    // create and return SphereInSphere geometry
+                    IGeometry geometry = new SphereInSphere(random);
+                    System.out.println("Sphere in Sphere");
+                    // initialize geometry with values from settings
+                    return geometry;
+                } catch (IOException ex) {
+                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
             }
-
+            return null;
         }
-        return null;
     }
-
     // NEW!!!
     // lite version = it prints things and i manually pick where to zoom in and re-run
     // note: forward scattering value is hardcoded in here
+
     public static void findPointOnPaschenCurveLitePP(double Nc, double NiStart, double NiEnd, int numSteps) throws IOException {
         ArrayList<MeanAndError> results = new ArrayList<MeanAndError>();
         double increment = (NiEnd - NiStart) / numSteps;
@@ -166,7 +176,8 @@ int N = 3;
             MeanAndError result = sim.run(0.8);
             results.add(result);
 //            System.out.println(result);
-            System.out.println("{" + result.Nc + ", Around[" + result.mean + ", " + result.error + "]},");
+//            System.out.println("{" + result.Nc + ", Around[" + result.mean + ", " + result.error + "]},");
+            System.out.println("{" + result.Ni + ", Around[" + result.mean + ", " + result.error + "]},");
         }
         String filename = String.format("results_Nc_%s.json", Nc);
         writeJSON(results, filename);

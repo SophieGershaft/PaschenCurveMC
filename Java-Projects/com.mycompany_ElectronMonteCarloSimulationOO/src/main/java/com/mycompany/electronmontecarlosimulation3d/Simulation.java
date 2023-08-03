@@ -17,12 +17,11 @@ import org.apache.commons.lang3.time.StopWatch;
  * @author sgershaft
  */
 public class Simulation {
-    // TODO: !!!!!!! FIX SETTINGS TO WORK FOR BOTH PP AND SS 
-
+    
     private Queue<Electron> queue;
     private StopWatch stopwatch;
     Random random;
-    IGeometry geometry; // = new ParallelPlate(random);
+    IGeometry geometry; 
 
     double lambda;
     double lambda_i;
@@ -68,6 +67,7 @@ public class Simulation {
 
         // DEBUGGING PURPOSES:
         System.out.format("Ui: %.1f, Nc: %.1f, Ni: %.1f, lambda: %.3f, lambda_i: %.3f \n", Ui, Nc, Ni, lambda, lambda_i);
+//        System.out.format("Ui: %.1f, Ni: %.1f, lambda: %.3f\n", Ui, Ni, lambda); // SC version
 
         // simulation loop:
         for (int i = 0; i < count; i++) {
@@ -84,8 +84,6 @@ public class Simulation {
 
             while (queue.size() > 0) {
                 Electron currElectron = queue.remove();
-                double x0;
-                double x1;
                 boolean ionized = false;
                 boolean reachedAnode = false;
                 boolean isCathode = false;

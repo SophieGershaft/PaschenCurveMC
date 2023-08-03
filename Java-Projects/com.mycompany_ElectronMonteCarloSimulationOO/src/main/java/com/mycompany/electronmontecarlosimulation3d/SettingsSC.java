@@ -27,9 +27,10 @@ public class SettingsSC {
 
     private double r1; // inner radius in cm (sphere)
     private double r2; // outer radius in cm (cylinder)
+    private double h; // height of cylinder in cm
     private double Ui; // in electronvolts
-    private double Nc;
-    private double Ni;
+    private double lambda; // MFP, a known quantity only for SC
+    private double Ni; 
     private int count; // unitless, num of electrons to launch
     private double delta_t;
 
@@ -50,6 +51,10 @@ public class SettingsSC {
     public double getRCylinder() {
         return r2;
     }
+    
+    public double getH() {
+        return h;
+    }
 
     public int getCount() {
         return count;
@@ -57,10 +62,6 @@ public class SettingsSC {
 
     public double getDeltaT() {
         return delta_t;
-    }
-
-    public double getNc() {
-        return Nc;
     }
 
     public double getNi() {
@@ -77,13 +78,7 @@ public class SettingsSC {
     }
 
     public double getLambda() {
-        double lambda = (r2 - r1) / Nc;
         return lambda;
-    }
-
-    public double getLambdaI() {
-        double lambda_i = (r2 - r1) / Ni;
-        return lambda_i;
     }
 
     public void setRInner(double value) {
@@ -93,9 +88,9 @@ public class SettingsSC {
     public void setROuter(double value) {
         this.r2 = value;
     }
-
-    public void setNc(double value) {
-        this.Nc = value;
+    
+    public void setH(double value) {
+        this.h = value;
     }
 
     public void setNi(double value) {
