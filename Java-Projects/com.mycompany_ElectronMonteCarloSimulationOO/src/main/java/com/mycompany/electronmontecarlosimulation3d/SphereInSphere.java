@@ -56,6 +56,7 @@ public class SphereInSphere implements IGeometry {
         return (r.getNorm() < r1);
     }
 
+    // FIX THIS TO WORK WITH CYLINDER
     @Override
     public boolean isAnode(Vector r) {
         // if magntiude of r is >= radius to anode --> on or outside anode
