@@ -86,6 +86,7 @@ public class SphereInCylinder implements IGeometry {
         double phi = u * 2 * Math.PI;
         // 2*v - 1 is cos(theta)
         double theta = Math.acos(2 * v - 1);
+        
         double r1a = r1 + 1e-8;
         
 
