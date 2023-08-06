@@ -75,7 +75,7 @@ public class SphereInCylinder implements IGeometry {
         double z = pos.z;
 
         double potential = Interpolation.getPotentialSC(this.V, x, y, z);
-        return potential;
+        return potential; 
     }
 
     @Override

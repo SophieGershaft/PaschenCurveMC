@@ -64,7 +64,12 @@ public class Main {
             // get geometry
             geometry = createGeometry(file.getAbsolutePath(), random);
         }
+        
+        // TODO: FIND BREAKDOWN FOR SC
+        sphericalHarmonics();
+        findPointOnPaschenCurveLiteSC(4.0, 100.0, 150.0, 5);
 
+        /*
         Simulation sim = new Simulation(geometry, random);
         MeanAndError result = sim.run(0.8); // printThings, forwardScatter
 //        System.out.println(result);
@@ -75,12 +80,13 @@ public class Main {
         ArrayList<MeanAndError> theResults = new ArrayList<MeanAndError>();
         theResults.add(result);
         writeJSON(theResults, "results.json");
-
+        
 //        findPointOnPaschenCurveLiteSS(4.0, 100.0, 150.0, 5);
 //        System.out.println(LegendrePolynomials.P(2, 1));
         // MAIN METHOD FROM INTERPOLATION
         // load scpotential from file (see function below)
         Interpolation.makeScPotential("C:\\Users\\sgershaft\\github\\Paschen-Paper-January\\Java-Projects\\com.mycompany_ElectronMonteCarloSimulationOO\\src\\main\\resources\\phi.txt");
+        */
 
         // do a test. expected output: {0.130789, 0.161607, 0.359219}
 //        System.out.println(Arrays.toString(Interpolation.getEFieldSC(10, 2.784, 3.44, 5.775)));
@@ -104,7 +110,6 @@ int N = 3;
          */
     }
     // create geometry based on json input file
-
     public static IGeometry createGeometry(String fileName, Random random) {
         try {
             // parsing JSON file: can it be parsed as parallel plate?
@@ -139,9 +144,33 @@ int N = 3;
             return null;
         }
     }
-    // NEW!!!
-    // lite version = it prints things and i manually pick where to zoom in and re-run
-    // note: forward scattering value is hardcoded in here
+  
+    public static void sphericalHarmonics() {
+        IGeometry geometry = new SphereInCylinder(random);
+        Simulation sim = new Simulation(geometry, random);
+        MeanAndError result = sim.run(0.8);
+        LegendreFitter mylegendrefitter = new LegendreFitter(result.legendreData);
+        double[] res = mylegendrefitter.findMax();
+        System.out.println(Arrays.toString(res));
+    }
+    
+    public static void findPointOnPaschenCurveLiteSC(double lambda, double NiStart, double NiEnd, int numSteps) throws IOException {
+        ArrayList<MeanAndError> results = new ArrayList<MeanAndError>();
+        double increment = (NiEnd - NiStart) / numSteps;
+        for (double Ni = NiStart; Ni <= NiEnd; Ni += increment) {
+            SettingsSC.getInstance().setLambda(lambda);
+            SettingsSC.getInstance().setNi(Ni);
+            
+            IGeometry geometry = new SphereInCylinder(random);
+            Simulation sim = new Simulation(geometry, random);
+            
+            MeanAndError result = sim.run(0.8);
+            results.add(result);
+            System.out.println("{" + result.Ni + ", Around[" + result.mean + ", " + result.error + "]},");    
+        }
+        String filename = String.format("results_lambda_%s.json", lambda);
+        writeJSON(results, filename);
+    }
 
     public static void findPointOnPaschenCurveLitePP(double Nc, double NiStart, double NiEnd, int numSteps) throws IOException {
         ArrayList<MeanAndError> results = new ArrayList<MeanAndError>();
@@ -150,7 +179,6 @@ int N = 3;
             SettingsPP.getInstance().setNc(Nc);
             SettingsPP.getInstance().setNi(Ni);
 
-            // TEMPORARY SOLUTION : still need factory function to make it run w/ both PP and SS
             IGeometry geometry = new ParallelPlate(random);
             Simulation sim = new Simulation(geometry, random);
 
@@ -169,7 +197,6 @@ int N = 3;
             SettingsSS.getInstance().setNc(Nc);
             SettingsSS.getInstance().setNi(Ni);
 
-            // TEMPORARY SOLUTION : still need factory function to make it run w/ both PP and SS
             IGeometry geometry = new SphereInSphere(random);
             Simulation sim = new Simulation(geometry, random);
 

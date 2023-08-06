@@ -141,13 +141,14 @@ public class Simulation {
             }
             // save data for legendre fit
             double[] pair = {cosTheta, ((double)numElectrons)};
-            MeanAndError.legendreData.add(pair);
+            legendre_data.add(pair);
             
             allElectronCounts.add(numElectrons);
             allIonCounts.add(numIons);
             allCollisionCounts.add(numCollisions);
             allDeltaEnergyCounts.add(deCount);
         }
+        MeanAndError.legendreData = legendre_data;
         stopwatch.stop();
 
         System.out.println("Elapsed: " + stopwatch.formatTime());

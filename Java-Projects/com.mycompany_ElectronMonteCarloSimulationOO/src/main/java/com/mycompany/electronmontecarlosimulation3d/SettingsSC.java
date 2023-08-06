@@ -80,6 +80,10 @@ public class SettingsSC {
     public double getLambda() {
         return lambda;
     }
+    
+    public void setLambda(double value) {
+        this.lambda = value;
+    }
 
     public void setRInner(double value) {
         this.r1 = value;

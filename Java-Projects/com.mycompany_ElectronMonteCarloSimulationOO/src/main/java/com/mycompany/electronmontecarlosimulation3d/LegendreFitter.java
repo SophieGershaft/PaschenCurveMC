@@ -75,7 +75,7 @@ public class LegendreFitter {
     // fill the matricies and vectors that we need
     // i.e., create sumYY, sumPP, and sumPY
     public void computeSums() {
-        // first compute sumYY
+        // first compute sumYY --> y_i in the chi square
         sumYY = 0.0;
         for (double[] pair : legendreData) {
             sumYY += pair[1] * pair[1];
