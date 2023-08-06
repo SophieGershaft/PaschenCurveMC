@@ -80,20 +80,41 @@ public class Cholesky {
     */
     
     // Dr. Whitmer's cholesky solver method, copied here
-    public static void CholeskySolver(double[] mat, double[] p, double[] b) {
+    public static double[] choleskySolver(double[][] mat, double[] p, double[] b) {
         int n = mat.length;
         for (int i = 0; i < n; i++) {
           double sum = b[i];
           for (int k = i - 1; k >= 0; k--)
-            sum -= mat[n * i + k]* b[k];
+            sum -= mat[i][k]* b[k];
           b[i] = sum / p[i];
         }
 
         for (int i = n - 1; i >= 0; i--) {
           double sum = b[i];
           for (int k = i + 1; k < n; k++)
-            sum -= mat[k * n + i]* b[k];
+            sum -= mat[k][i]* b[k];
           b[i] = sum / p[i];
         }
-      }
+        return b;
+    }
+    
+    public static double[] extractDiagonal(double[][] mat) {
+        int n = mat.length;
+        double[] mainDiagonal = new double[n];
+
+        // Find main diagonal
+        for (int i = 0; i < n; i++) {
+            mainDiagonal[i] = mat[i][i];
+        }
+        
+        return mainDiagonal;
+    }
+    
+    public static double dotProduct(double[] array1, double[] array2) {
+        double result = 0.0;
+        for (int i = 0; i < array1.length; i++) {
+            result += array1[i] * array2[i];
+        }
+        return result;
+    }
 }
