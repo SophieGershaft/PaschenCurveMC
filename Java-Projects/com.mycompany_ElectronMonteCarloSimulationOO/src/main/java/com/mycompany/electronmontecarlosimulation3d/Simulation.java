@@ -64,6 +64,7 @@ public class Simulation {
         double meanSquareDeltaEnergies;
         double deError;
         int deCount = 0;
+        ArrayList<double[]> legendre_data = new ArrayList<double[]>();
 
         // DEBUGGING PURPOSES:
         System.out.format("Ui: %.1f, Nc: %.1f, Ni: %.1f, lambda: %.3f, lambda_i: %.3f \n", Ui, Nc, Ni, lambda, lambda_i);
@@ -81,6 +82,11 @@ public class Simulation {
             Vector startVelocity = new Vector(0, 0, 0);
             Electron electron = new Electron(startPosition, startVelocity, geometry);
             queue.add(electron);
+            // calculate cosTheta for legendre polynomial fitting
+            double x = electron.position.x;
+            double y = electron.position.y;
+            double z = electron.position.z;
+            double cosTheta = z / Math.sqrt(x*x + y*y + z*z);
 
             while (queue.size() > 0) {
                 Electron currElectron = queue.remove();
@@ -133,6 +139,10 @@ public class Simulation {
                     currElectron.forwardScatter(energyLoss, minCos);
                 } while (true);
             }
+            // save data for legendre fit
+            double[] pair = {cosTheta, ((double)numElectrons)};
+            MeanAndError.legendreData.add(pair);
+            
             allElectronCounts.add(numElectrons);
             allIonCounts.add(numIons);
             allCollisionCounts.add(numCollisions);
