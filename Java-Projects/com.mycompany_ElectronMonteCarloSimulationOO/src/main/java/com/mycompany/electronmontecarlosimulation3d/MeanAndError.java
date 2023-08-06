@@ -5,6 +5,8 @@
  */
 package com.mycompany.electronmontecarlosimulation3d;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author sgershaft
@@ -17,7 +19,8 @@ public class MeanAndError {
     public double Nc;
     public double Ni;
     public double lambda_i;
-    public double[][] electronData;
+    public double[] cosThetaList;
+    public static ArrayList<double[]> legendreData;
     
     @Override
     public String toString() {
