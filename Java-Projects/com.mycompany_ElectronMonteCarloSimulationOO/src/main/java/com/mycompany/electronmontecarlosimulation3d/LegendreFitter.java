@@ -2,10 +2,6 @@ package com.mycompany.electronmontecarlosimulation3d;
 
 import java.util.ArrayList;
 
-/**
- *
- * @author wbowers
- */
 public class LegendreFitter {
     
     // using even orders from 0-10, so 6 dimensions
