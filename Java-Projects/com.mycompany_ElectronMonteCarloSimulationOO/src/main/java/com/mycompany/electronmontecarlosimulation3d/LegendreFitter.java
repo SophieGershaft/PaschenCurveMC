@@ -11,14 +11,15 @@ public class LegendreFitter {
     // using even orders from 0-10, so 6 dimensions
     public final int dim = 6;
     public ArrayList<double[]> legendreData;
-    public double[][] sumPP;
-    public double[] sumPY;
-    public double sumYY;
-    public double[][] cholesky;
-    public double[] choleskyP;
-    public double[] choleskyB;
-    public double variance;
+    public double[][] sumPP; // holds big matrix of twiddles
+    public double[] sumPY; // holds vector (dependent on experimental data)
+    public double sumYY; // simple sum of squared ion counts
+    public double[][] cholesky; // matrix after cholesky decomp
+    public double[] choleskyP; // diagonal of cholesky
+    public double[] choleskyB; // coefficients for legendre polynomials
+    public double variance; // variance of the fit, used for getting error
     
+    // constructor
     public LegendreFitter(ArrayList<double[]> legendreData) {
         this.legendreData = legendreData; // {cos(theta), electrons}
     }
@@ -50,6 +51,7 @@ public class LegendreFitter {
         return res;
     }
     
+    // get a twiddle using two legendre polynomials
     public double computePTwiddle(int o1, int o2) {
         double res = 0.0;
         for (double[] pair : legendreData) {
@@ -59,6 +61,7 @@ public class LegendreFitter {
         return res;
     }
     
+    // get a twiddle using one legendre polynomial and one y 
     public double computeYTwiddle(int o) {
         double res = 0.0;
         for (double[] pair : legendreData) {
@@ -69,6 +72,8 @@ public class LegendreFitter {
         return res;
     }
     
+    // fill the matricies and vectors that we need
+    // i.e., create sumYY, sumPP, and sumPY
     public void computeSums() {
         // first compute sumYY
         sumYY = 0.0;
@@ -91,13 +96,14 @@ public class LegendreFitter {
         }
     }
     
+    // get the coefficients using cholesky decomp
     public void solveFit() {
         this.cholesky = Cholesky.cholesky(sumPP);
         this.choleskyP = Cholesky.extractDiagonal(cholesky);
         this.choleskyB = Cholesky.choleskySolver(cholesky, choleskyP, sumPY);
     }
     
-        
+    // compute the value of the fit at a given point
     public double fitValue(double z) {
  	double sum = 0;
 	for (int i = 0; i < dim; i++)
@@ -105,6 +111,7 @@ public class LegendreFitter {
 	return sum;
     }
     
+    // get the error of the fit at a given point
     public double fitError(double z) {
         double[] pvec = new double[dim];
 	for (int i = 0; i < dim; i++) {
